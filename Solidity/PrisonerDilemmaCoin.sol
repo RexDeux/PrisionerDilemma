@@ -5,10 +5,10 @@ pragma solidity ^0.8.7;
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.0/contracts/token/ERC20/ERC20.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.8.0/contracts/access/Ownable.sol";
 
-contract PrisionerDilemmaCoin is ERC20, Ownable {
+contract PrisonerDilemmaCoin is ERC20, Ownable {
     uint256 public constant MAX_SUPPLY = 10_000_000 * 10**18; // 10 million tokens
 
-    constructor() ERC20("PrisionerDilemmaCoin", "PDC") {
+    constructor() ERC20("PrisonerDilemmaCoin<", "PDC") {
         _mint(msg.sender, MAX_SUPPLY); // Mint all tokens to contract owner initially
     }
 

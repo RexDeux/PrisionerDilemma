@@ -3,7 +3,6 @@ pragma solidity ^0.8.7;
 
 import "./PrisonerDilemmaCoin.sol"; // Ensure this path is correct
 
-
 contract PrisonersDilemmaGame {
     struct Player {
         uint256 deposit;         // Amount of tokens deposited by the player
@@ -33,6 +32,8 @@ contract PrisonersDilemmaGame {
     }
 
     constructor(PrisonerDilemmaCoin _pdcToken, uint256 _entryFee, uint256 _roundDuration) {
+        require(_entryFee > 0, "Entry fee must be greater than zero");
+        require(_roundDuration > 0, "Round duration must be greater than zero");
         pdcToken = _pdcToken;
         entryFee = _entryFee;
         roundDuration = _roundDuration;
@@ -58,7 +59,7 @@ contract PrisonersDilemmaGame {
         players[msg.sender].commitment = keccak256(abi.encodePacked(_betray, _nonce));
         players[msg.sender].hasChosen = true;
 
-        // If the player doesn't commit, assume they chose to cooperate (not betray)
+        // Assume they chose to betray or cooperate based on the _betray parameter
         players[msg.sender].choice = _betray;
 
         emit ChoiceMade(msg.sender, _betray);
@@ -105,7 +106,7 @@ contract PrisonersDilemmaGame {
 
             // Reset player's state for the next round
             player.hasChosen = false;
-            player.commitment = ""; // Clear the commitment
+            player.commitment = bytes32(0); // Clear the commitment properly
             player.choice = false; // Reset choice
             player.hasRevealed = false; // Reset reveal status
         }
