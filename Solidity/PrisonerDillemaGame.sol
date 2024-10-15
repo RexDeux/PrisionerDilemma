@@ -92,11 +92,23 @@ contract PrisonersDilemmaGame {
             uint256 payout;
 
             if (betrayers == participants.length) {
-                // Everyone betrayed: Each player loses 90% of their deposit
-                payout = player.deposit / 10;
-            } else if (player.choice) { // Betrayers earn 30% profit on their deposit
+        // Case 1: Everyone betrayed
+        // Each player loses 90% of their deposit
+        payout = player.deposit / 10;
+
+            } else if (betrayers == 0) {
+                // Case 2: Everyone cooperated
+                // Everyone gets 100% of their deposit back
+                payout = player.deposit;
+
+            } else if (player.choice) { 
+                // Case 3: This player betrayed
+                // Betrayers earn 30% profit on their deposit (130%)
                 payout = player.deposit * 130 / 100;
-            } else { // Cooperators lose 50% of their deposit
+
+            } else {
+                // Case 4: This player cooperated but some betrayed
+                // Cooperators lose 50% of their deposit
                 payout = player.deposit / 2;
             }
 
