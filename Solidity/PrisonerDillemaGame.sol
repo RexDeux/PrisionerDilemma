@@ -9,7 +9,8 @@ contract PrisonersDilemmaGame {
         bytes32 commitment;      // Commitment (hash of choice and nonce)
         bool hasChosen;          // Flag indicating if the player has made a choice
         bool hasRevealed;        // Flag indicating if the player has revealed their choice
-        bool choice;             // The actual choice made by the player (true for betray, false for cooperate)
+        bool choice;  
+        uint256 roundJoined;            // The actual choice made by the player (true for betray, false for cooperate)
     }
 
     PrisonerDilemmaCoin public pdcToken;       // Instance of the PrisonerDilemmaCoin contract
@@ -38,14 +39,24 @@ contract PrisonersDilemmaGame {
         entryFee = _entryFee;
         roundDuration = _roundDuration;
         owner = msg.sender;
-        currentRound = 0;
+        currentRound = 1;
+        roundEndTime = block.timestamp + roundDuration;
     }
 
     // Players join the game
     function joinGame() external {
         require(pdcToken.transferFrom(msg.sender, address(this), entryFee), "Transfer failed");
+        require(players[msg.sender].roundJoined < currentRound, "Already joined this round");
+
         participants.push(msg.sender);
-        players[msg.sender].deposit = entryFee;
+        players[msg.sender] = Player({
+            deposit: entryFee,
+            commitment: bytes32(0),
+            hasChosen: false,
+            hasRevealed: false,
+            choice: false,
+            roundJoined: currentRound
+        });
 
         emit PlayerJoined(msg.sender, entryFee);
     }
